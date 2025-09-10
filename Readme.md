@@ -190,13 +190,3 @@ Contributions are welcome! Please feel free to submit issues, feature requests, 
 ## 📄 License
 
 ISC License - feel free to use in your projects!
-
-## 🙏 Acknowledgments
-
-- **Amiri Font**: Created by Khaled Hosny, based on Bulaq Press typography
-- **Puppeteer**: For excellent PDF generation capabilities
-- **pdf-lib**: For seamless PDF merging functionality
-
----
-
-**Made with ❤️ for the Arabic-speaking community**
