@@ -11,3 +11,11 @@ node_modules/
     npm-debug.log*
     yarn-debug.log*
     yarn-error.log*
+    
+# Test files
+*.epub
+*.pdf
+
+# OS generated files
+Thumbs.db
+.DS_Store

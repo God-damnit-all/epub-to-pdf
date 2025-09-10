@@ -1,12 +1,12 @@
 {
-  "name": "eoub",
+  "name": "epub-to-pdf",
   "version": "1.0.0",
-  "description": "",
+  "description": "Convert EPUB files to PDF with Amiri font support",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
-  "keywords": [],
+  "keywords": [ "epub", "pdf", "converter", "arabic", "amiri" ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",

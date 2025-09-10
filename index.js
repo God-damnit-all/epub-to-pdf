@@ -119,6 +119,26 @@ async function epubToPdf(contentDir, outputPdf) {
   });
   const page = await browser.newPage();
 
+  // Load Amiri fonts
+  const amiriRegularPath = path.join(__dirname, "fonts", "Amiri-Regular.ttf");
+  const amiriBoldPath = path.join(__dirname, "fonts", "Amiri-Bold.ttf");
+
+  let amiriRegularBase64 = "";
+  let amiriBoldBase64 = "";
+
+  if (fs.existsSync(amiriRegularPath)) {
+    amiriRegularBase64 = fs.readFileSync(amiriRegularPath).toString("base64");
+  }
+
+  if (fs.existsSync(amiriBoldPath)) {
+    amiriBoldBase64 = fs.readFileSync(amiriBoldPath).toString("base64");
+  }
+
+  console.log("🔤 Amiri fonts loaded:", {
+    regular: amiriRegularBase64 ? "✅" : "❌",
+    bold: amiriBoldBase64 ? "✅" : "❌",
+  });
+
   // Function to detect if an XHTML file contains a spread background
   function detectSpreadBackground(filePath) {
     try {
@@ -238,6 +258,42 @@ async function epubToPdf(contentDir, outputPdf) {
     // Wait for content to load completely
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
+    // Inject Amiri fonts for each page
+    if (amiriRegularBase64) {
+      await page.addStyleTag({
+        content: `
+          @font-face {
+            font-family: 'Amiri';
+            font-weight: 400;
+            src: url('data:font/truetype;base64,${amiriRegularBase64}') format('truetype');
+          }
+        `,
+      });
+    }
+    if (amiriBoldBase64) {
+      await page.addStyleTag({
+        content: `
+          @font-face {
+            font-family: 'Amiri';
+            font-weight: 700;
+            src: url('data:font/truetype;base64,${amiriBoldBase64}') format('truetype');
+          }
+        `,
+      });
+    }
+
+    // Apply Amiri font to all text
+    await page.addStyleTag({
+      content: `
+        * {
+          font-family: 'Amiri', serif !important;
+        }
+        body {
+          font-family: 'Amiri', serif !important;
+        }
+      `,
+    });
+
     // For fixed-layout EPUBs, we need to preserve the exact layout
     await page.addStyleTag({
       content: `
@@ -261,6 +317,7 @@ async function epubToPdf(contentDir, outputPdf) {
           zoom: 1 !important;
           transform: none !important;
           position: relative !important;
+          font-family: 'Amiri' !important;
         }
         
         /* Prevent any automatic scaling */
@@ -280,6 +337,18 @@ async function epubToPdf(contentDir, outputPdf) {
         h1, h2, h3, h4, h5, h6, p, div {
           margin: inherit !important;
           padding: inherit !important;
+        }
+        
+        /* Force Amiri font on all elements */
+        * {
+          font-family: 'Amiri', serif !important;
+        }
+        
+        /* Specifically target text elements */
+        p, div, span, h1, h2, h3, h4, h5, h6, 
+        li, td, th, label, input, textarea, 
+        .text, [class*="text"], [id*="text"] {
+          font-family: 'Amiri', serif !important;
         }
         
         @media print {
