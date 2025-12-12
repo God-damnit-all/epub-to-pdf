@@ -23,14 +23,16 @@ function unzipEpub(epubPath, extractDir) {
     if (process.platform === "win32") {
       // Windows - try PowerShell expand-archive first, fallback to 7zip or unzip
       try {
+        process.env['epubPath'] = epubPath;
+        process.env['extractDir'] = extractDir;
         execSync(
-          `powershell -Command "Expand-Archive -Path '${epubPath}' -DestinationPath '${extractDir}' -Force"`,
+          `powershell -NoProfile -Command "Expand-Archive -LiteralPath $env:epubPath -DestinationPath $env:extractDir"`,
           { stdio: "inherit" }
         );
       } catch (e) {
         // Fallback to 7zip or unzip
         try {
-          execSync(`7z x "${epubPath}" -o"${extractDir}" -y`, {
+          execSync(`7z x "${epubPath}" -o"${extractDir}"`, {
             stdio: "inherit",
           });
         } catch (e2) {
